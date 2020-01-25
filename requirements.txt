@@ -1,4 +1,4 @@
 hermes_python>=0.3.3
 requests
 toml>=0.10.0
-
+wifi>=0.4.0

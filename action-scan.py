@@ -4,8 +4,8 @@
 from hermes_python.hermes import Hermes, MqttOptions
 import configparser
 import io
-from musicplayer import MuuzikPlayer
 import toml
+from wifi import Cell, Scheme
 
 USERNAME_INTENTS = "mcitar"
 MQTT_BROKER_ADDRESS = "localhost:1883"
@@ -27,12 +27,14 @@ def read_configuration_file():
         return dict()
 
 def intent_callback_scan(hermes, intent_message):
-    hermes.publish_end_session(intent_message.session_id, "scanne das wlan")
+    print('scanne wlan ist an')
+    wlan = Cell.all('wlan0')
+    hermes.publish_end_session(intent_message.session_id, wlan)
 
 
 if __name__ == "__main__":
     config = read_configuration_file()
-    musicplayer = MuuzikPlayer(config)
+    #musicplayer = MuuzikPlayer(config)
 
     snips_config = toml.load('/etc/snips.toml')
     if 'mqtt' in snips_config['snips-common'].keys():
@@ -44,4 +46,4 @@ if __name__ == "__main__":
     mqtt_opts = MqttOptions(username=MQTT_USERNAME, password=MQTT_PASSWORD, broker_address=MQTT_BROKER_ADDRESS)
 
     with Hermes(mqtt_options=mqtt_opts) as h:
-        h.subscribe_intent('mcitar:scan', intent_callback_scan).loop_forever()
+        h.subscribe_intent('mcitar:scanWlan', intent_callback_scan).loop_forever()
